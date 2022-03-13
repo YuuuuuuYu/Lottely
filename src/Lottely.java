@@ -137,7 +137,7 @@ public class Lottely {
 
 	public static void main(String[] args) {
 		init();
-		System.out.println(String.valueOf((int) (allCnt / 6) + 2) + "È¸ ¿¹»ó");
+		System.out.println(String.valueOf((int) (allCnt / 6) + 2) + "íšŒ ì˜ˆìƒ");
 		System.out.println("----------------------------------------------------");
 		for (int i = 0; i < 5; i++) {
 			play(6);
