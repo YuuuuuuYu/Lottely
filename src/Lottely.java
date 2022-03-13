@@ -14,7 +14,7 @@ import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 public class Lottely {
 	static final String projectPath = System.getProperty("user.dir");
 
-	static double allCnt = 0.0D;
+	static int allCnt = 0;
 	static int[] num = new int[46];
 	static int[] tens = new int[5];
 	static int[] numWeight = new int[46];
@@ -137,7 +137,7 @@ public class Lottely {
 
 	public static void main(String[] args) {
 		init();
-		System.out.println(String.valueOf((int) (allCnt / 6.0D) + 2) + "회 예상");
+		System.out.println(String.valueOf((int) (allCnt / 6) + 2) + "회 예상");
 		System.out.println("----------------------------------------------------");
 		for (int i = 0; i < 5; i++) {
 			play(6);
