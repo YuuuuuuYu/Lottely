@@ -6,6 +6,7 @@ import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+
 import org.apache.poi.hssf.usermodel.HSSFCell;
 import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
@@ -19,8 +20,49 @@ public class Lottely {
 	static int[] tens = new int[5];
 	static int[] numWeight = new int[46];
 	static int[] tensWeight = new int[5];
+	static int[] result = new int[46];
 
-	static void download() {
+	public static void main(String[] args) {
+		Lottely temp = new Lottely();
+		temp.init();
+		
+		int pickUpCnt = 6;
+		int trainCnt = 140;
+		int ballNo = 0;
+		List<Integer> resultArr = new ArrayList<>();
+		
+		for (int i = 0; i < trainCnt; i++) {
+			ballNo = temp.training();
+			
+			result[ballNo]++;
+		}
+		
+		System.out.println(String.valueOf((int)(allCnt / 6) + 2) + "회 예상");
+		System.out.println("----------------------------------------------------");
+		
+		int maxValue = 0;
+		int idx = 0;
+		
+		for (int i = 0; i < pickUpCnt; i++) {
+			maxValue = 0;
+			for (int j = 1; j < result.length; j++) {
+				if (maxValue < result[j]) {
+					maxValue = result[j];
+					idx = j;
+				}
+				//System.out.print(result[j] + " ");
+			}
+			//System.out.println();
+			resultArr.add(idx);
+			result[idx] = 0;
+		}
+		
+		Collections.sort(resultArr);
+		
+		resultArr.stream().forEach(no -> System.out.print(no + " "));
+	}
+	
+	void download() {
 		try {
 			Desktop.getDesktop().browse(new URI("https://dhlottery.co.kr/gameResult.do?method=byWin&wiselog=H_C_1_1"));
 		} catch (Exception e) {
@@ -28,7 +70,7 @@ public class Lottely {
 		}
 	}
 
-	static void init() {
+	void init() {
 		FileInputStream fis = null;
 		File file = null;
 		try {
@@ -63,7 +105,7 @@ public class Lottely {
 			tensWeight[i] = tensWeight[i] + tens[i] + tensWeight[i - 1];
 	}
 
-	static void printPer() {
+	void printPer() {
 		DecimalFormat df = new DecimalFormat("0.000");
 		int i;
 		for (i = 1; i < num.length; i++)
@@ -74,74 +116,63 @@ public class Lottely {
 			System.out.println("" + i + "" + tens[i] + ",\t " + df.format(tens[i] / allCnt * 100.0D));
 	}
 
-	static void printArr(int[] arr) {
+	void printArr(int[] arr) {
 		for (int i = 0; i < arr.length; i++)
 			System.out.println("i: " + i + ", value: " + arr[i]);
 	}
+	
+	void print(int[] data) {
+		
+		for (int number : data) {
+			System.out.print((new StringBuilder()).append(number).append("\t").toString());
+		}
+		System.out.println();
+	}
 
-	static void play(int count) {
+	int training() {
 		int lRandom = 0;
 		int nRandom = 0;
 		int tmpVal = 0;
-		List<Integer> result = new ArrayList<>();
 		
-		for (int i = 0; i < count; i++) {
-			int len = 0;
-			int minRnd = 0;
-			int maxRnd = numWeight[45];
-			lRandom = (int) (Math.random() * tensWeight[4]) + 1;
-			
-			for (int j = 1; j < 5 && lRandom > tensWeight[j - 1]; j++)
-				len = j;
-			
-			switch (len) {
-			case 1:
-				minRnd = numWeight[10];
-				maxRnd = numWeight[20];
-				break;
-			case 2:
-				minRnd = numWeight[20];
-				maxRnd = numWeight[30];
-				break;
-			case 3:
-				minRnd = numWeight[30];
-				maxRnd = numWeight[40];
-				break;
-			case 4:
-				minRnd = numWeight[40];
-				maxRnd = numWeight[45];
-				break;
-			default:
-				maxRnd = numWeight[10];
-				break;
-			}
-
-			nRandom = (int) (Math.random() * (maxRnd - minRnd)) + minRnd;
-
-			for (int j = len * 10; nRandom > numWeight[j]; j++)
-				tmpVal = j;
-
-			if (result.contains(Integer.valueOf(tmpVal))) {
-				i--;
-			} else {
-				if (tmpVal == 0)
-					tmpVal = 45;
-				result.add(Integer.valueOf(tmpVal));
-			}
+		int len = 0;
+		int minRnd = 0;
+		int maxRnd = numWeight[45];
+		lRandom = (int) (Math.random() * tensWeight[4]) + 1;
+		
+		for (int j = 1; j < 5 && lRandom > tensWeight[j - 1]; j++)
+			len = j;
+		
+		switch (len) {
+		case 1:
+			minRnd = numWeight[10];
+			maxRnd = numWeight[20];
+			break;
+		case 2:
+			minRnd = numWeight[20];
+			maxRnd = numWeight[30];
+			break;
+		case 3:
+			minRnd = numWeight[30];
+			maxRnd = numWeight[40];
+			break;
+		case 4:
+			minRnd = numWeight[40];
+			maxRnd = numWeight[45];
+			break;
+		default:
+			maxRnd = numWeight[10];
+			break;
 		}
 
-		Collections.sort(result);
-		for (int i = 0; i < result.size(); i++)
-			System.out.print((new StringBuilder()).append(result.get(i)).append("\t").toString());
-	}
+		nRandom = (int) (Math.random() * (maxRnd - minRnd)) + minRnd;
 
-	public static void main(String[] args) {
-		init();
-		System.out.println(String.valueOf((int) (allCnt / 6) + 2) + "회 예상");
-		System.out.println("----------------------------------------------------");
-		for (int i = 0; i < 5; i++) {
-			play(6);
-			System.out.println();
-		}
+		for (int j = len * 10; nRandom > numWeight[j]; j++)
+			tmpVal = j;
+
+		if (tmpVal == 0)
+			tmpVal = 45;
+
+		return tmpVal;
 	}
+	
 }
