@@ -1,4 +1,4 @@
 # Lottely(로또번호 예측하기)
 
-22.12.28
-- 번호 뽑는 로직 수정
+25.01.07 v0.2 업데이트  
+[바로가기](https://github.com/YuuuuuuYu/Lottely/blob/main/LotteryGame.ipynb)
